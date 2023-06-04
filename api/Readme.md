@@ -8,5 +8,5 @@
 ### Scripts
 
 	yarn install
-  yarn dev
+    yarn dev
 Grab the .env from your teammate and start working on the project.
