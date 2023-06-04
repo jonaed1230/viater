@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: bitnami/postgresql:12.3.0
+    restart: always
+    environment:
+      POSTGRESQL_USERNAME: viater
+      POSTGRESQL_PASSWORD: Someone1234
+      POSTGRESQL_DATABASE: viater
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/bitnami/postgresql
+  
+  pgAdmin:
+    restart: always
+    image: dpage/pgadmin4
+    container_name: 'pgadmin_container_viater'
+    depends_on:
+      - postgres
+    ports:
+      - 8000:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@viater.com
+      PGADMIN_DEFAULT_PASSWORD: Someone#1234
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+
+volumes:
+  db:
+    driver: local
+  pgadmin:
+    driver: local

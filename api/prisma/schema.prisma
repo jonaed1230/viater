@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                         String       @id @default(cuid())
+  full_name                  String
+  created_at                 DateTime     @default(now())
+  mobile_number              String       @unique
+  email                      String?      @unique
+  password                   String
+  role                       Role         @default(USER)
+  verified                   Boolean      @default(false)
+  verification_code          String?
+  verification_code_expiry   DateTime?
+  reset_password_code        String?
+  reset_password_code_expiry DateTime?
+  image                      String?
+  address                    String?
+  driver_extra               DriverExtra?
+  reviews                    Review[]
+  requests                   Request[]
+  bids                       Bid[]
+  trips_as_driver            Trip[]      @relation("Trip_to_driver")
+  trips_as_passenger         Trip[]     @relation("Trip_to_passenger")
+}
+
+model DriverExtra {
+  id                 String @id @default(cuid())
+  driving_pattern    Int
+  driving_experience Int
+  average_speed      Float
+  user               User   @relation(fields: [user_id], references: [id])
+  user_id            String @unique
+}
+
+model Review {
+  id      String @id @default(cuid())
+  stars   Int
+  message String
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
+}
+
+model Request {
+  id                      String        @id @default(cuid())
+  from_lat                String
+  from_lng                String
+  to_lat                  String
+  to_lng                  String
+  budget                  Float
+  additional_requirements String?
+  status                  RequestStatus @default(PENDING)
+  user                    User          @relation(fields: [user_id], references: [id])
+  user_id                 String        @unique
+  trip                    Trip?
+  bids                    Bid[]
+}
+
+model Bid {
+  id                 String  @id @default(cuid())
+  amount             Float
+  additional_message String?
+  request            Request @relation(fields: [request_id], references: [id])
+  request_id         String
+  driver             User    @relation(fields: [driver_id], references: [id])
+  driver_id          String
+  trip               Trip?
+}
+
+model Trip {
+  id                     String   @id @default(cuid())
+  request                Request  @relation(fields: [request_id], references: [id])
+  request_id             String   @unique
+  bid                    Bid      @relation(fields: [bid_id], references: [id])
+  bid_id                 String   @unique
+  average_speed          Float
+  distance               Float
+  start_time             DateTime
+  end_time               DateTime
+  averate_traffic_status Int
+  payment                Payment?
+  driver                 User     @relation("Trip_to_driver", fields: [driver_id], references: [id])
+  driver_id              String   @unique
+  user                   User     @relation("Trip_to_passenger", fields: [user_id], references: [id])
+  user_id                String   @unique
+}
+
+model Payment {
+  id String @id @default(cuid())
+  method PaymentMethod
+  payment_id String
+  amount Float
+  trip Trip @relation(fields: [trip_id], references: [id])
+  trip_id String @unique 
+}
+
+enum Role {
+  ADMIN
+  USER
+  SUPPORT
+  DRIVER
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentMethod {
+  SSLCOMMERZ
+  BKASH
+}
