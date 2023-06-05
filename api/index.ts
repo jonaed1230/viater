@@ -14,8 +14,4 @@ app.get('/', (req, res) => {
   res.send('Welcome to viater API');
 });
 
-app.listen(process.env.PORT, () => {
-  console.log('App listening on port 3000!');
-});
-
 export default app;
