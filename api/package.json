@@ -7,7 +7,7 @@
     "start": "ts-node ./index.ts",
     "build": "prepare:db && tsc -p .",
     "studio": "prisma studio",
-    "prepare:db": "prisma generate && prisma db push && tsc -p ."
+    "prepare:db": "prisma generate && prisma db push"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
