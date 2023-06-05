@@ -1,8 +1,9 @@
 {
   "version": 2,
-  "name": "viater",
-  "scripts": {
-    "start": "ts-node ./index.ts",
-    "build": "prepare:db && tsc -p ."
-  }
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "."
+    }
+  ]
 }
