@@ -9,9 +9,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/api', appRouter);
 app.get('/', (req, res) => {
-  res.send('Welcome to viater API');
+  res.send('Welcome to viater API Home');
 });
+
+app.use('/api', appRouter);
 
 export default app;
