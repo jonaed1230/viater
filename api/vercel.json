@@ -1,15 +1,8 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "index.ts",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "."
-    }
-  ]
+  "name": "viater",
+  "scripts": {
+    "start": "ts-node ./index.ts",
+    "build": "prepare:db && tsc -p ."
+  }
 }
