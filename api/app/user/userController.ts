@@ -47,7 +47,7 @@ export async function signIn(req: Request, res: Response) {
     });
     
     return res.status(200).json({
-      message: "User signed in successfully",
+      message: "Successfully",
     });
 
   } catch (error) {
@@ -59,7 +59,7 @@ export async function signIn(req: Request, res: Response) {
 }
 
 export async function signUp(req: Request, res: Response) {
-  const { full_name, mobile_number, password, role } = await req.body;
+  const { full_name, mobile_number, password, role, license_number } = await req.body;
   const existedUser = await prisma.user.findUnique({
     where: {
       mobile_number,
@@ -87,6 +87,22 @@ export async function signUp(req: Request, res: Response) {
         verification_code_expiry: new Date(+Date.now() + 1000 * 60 * 60), // 1 hour from now
       },
     });
+
+    if (role === "DRIVER") {
+      await prisma.driverExtra.create({
+        data: {
+          driving_pattern: 1,
+          driving_experience: 0,
+          average_speed: 60.0,
+          license_number,
+          user: {
+            connect: {
+              id: user.id,
+            },
+          }
+        }
+      });
+    }
 
     await axios.get(
       `http://bulksmsbd.net/api/smsapi?api_key=${process.env.BSB_API_KEY}&type=text&number=88${mobile_number}&senderid=8809617611745&message=Hi%20${full_name},%20Your%20VIATER%20verification%20code%20is%20${verification_code}%20(Do%20not%20share%20this%20code%20with%20anyone)`

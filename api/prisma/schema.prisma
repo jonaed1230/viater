@@ -38,6 +38,7 @@ model DriverExtra {
   driving_pattern    Int
   driving_experience Int
   average_speed      Float
+  license_number     String
   user               User   @relation(fields: [user_id], references: [id])
   user_id            String @unique
 }
@@ -58,6 +59,8 @@ model Request {
   to_lng                  String
   budget                  Float
   additional_requirements String?
+  created_at              DateTime      @default(now())
+  departure_time          DateTime
   status                  RequestStatus @default(PENDING)
   user                    User          @relation(fields: [user_id], references: [id])
   user_id                 String        @unique
