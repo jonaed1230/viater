@@ -87,3 +87,40 @@ export async function createBid(req: Request, res: Response) {
     });
   }
 }
+
+export async function getBids(req: Request, res: Response) {
+  const user = await checkUser(req, res);
+
+  const { id } = await req.body;
+
+  try {
+    const request = await prisma.request.findFirst({
+      where: {
+        id,
+      }
+    });
+
+    if (!request) {
+      return res.status(400).json({
+        message: "Request not found",
+      })
+    }
+
+    const bids = await prisma.bid.findMany({
+      where: {
+        request_id: id,
+      }
+    });
+
+    return res.status(200).json({
+      message: "Bids fetched successfully",
+      data: bids
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      message: "Bad Request",
+    });
+  }
+}
