@@ -52,7 +52,7 @@ export async function createOrder(req: Request, res: Response) {
         from_lng,
         to_lat,
         to_lng,
-        budget,
+        budget: parseInt(budget),
         additional_requirements,
         departure_time,
         user: {
@@ -108,7 +108,7 @@ export async function updateOrder(req: Request, res: Response) {
         from_lng,
         to_lat,
         to_lng,
-        budget,
+        budget: parseInt(budget),
         additional_requirements,
         departure_time,
       }

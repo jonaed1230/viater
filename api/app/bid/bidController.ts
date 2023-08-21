@@ -60,7 +60,7 @@ export async function createBid(req: Request, res: Response) {
 
     const bid = await prisma.bid.create({
       data: {
-        amount,
+        amount: parseInt(amount),
         additional_message,
         request: {
           connect: {
@@ -90,6 +90,12 @@ export async function createBid(req: Request, res: Response) {
 
 export async function getBids(req: Request, res: Response) {
   const user = await checkUser(req, res);
+
+  if (user.role === "USER") {
+    return res.status(401).json({
+      message: "Unauthorized",
+    });
+  }
 
   const { id } = await req.body;
 
