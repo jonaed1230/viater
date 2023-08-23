@@ -85,11 +85,11 @@ model Trip {
   request_id             String   @unique
   bid                    Bid      @relation(fields: [bid_id], references: [id])
   bid_id                 String   @unique
-  average_speed          Float
+  average_speed          Float   @default(0)
   distance               Float
   start_time             DateTime
   end_time               DateTime
-  averate_traffic_status Int
+  average_traffic_status Int
   payment                Payment?
   driver                 User     @relation("Trip_to_driver", fields: [driver_id], references: [id])
   driver_id              String   @unique
