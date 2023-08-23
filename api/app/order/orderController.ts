@@ -206,6 +206,7 @@ export async function getOrders(req: Request, res: Response) {
     const orders = await prisma.request.findMany({
       where: {
         user_id: user.id,
+        status: "PENDING",
       }
     });
 

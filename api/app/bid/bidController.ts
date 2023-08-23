@@ -130,3 +130,71 @@ export async function getBids(req: Request, res: Response) {
     });
   }
 }
+
+export async function acceptBid(req: Request, res: Response) {
+  const user = await checkUser(req, res);
+
+  if (user.role === "DRIVER") {
+    return res.status(401).json({
+      message: "Unauthorized",
+    });
+  }
+
+  const { id } = await req.body;
+
+  try {
+    const bid = await prisma.bid.findFirst({
+      where: {
+        id,
+      }
+    });
+
+    if (!bid) {
+      return res.status(400).json({
+        message: "Bid not found",
+      })
+    }
+
+    const request = await prisma.request.findFirst({
+      where: {
+        id: bid.request_id,
+      }
+    });
+
+    if (!request) {
+      return res.status(400).json({
+        message: "Request not found",
+      })
+    }
+
+    await prisma.request.update({
+      where: {
+        id: request.id,
+      },
+      data: {
+        status: "ACCEPTED",
+      }
+    });
+
+    const updatedBid = await prisma.bid.deleteMany({
+      where: {
+        id: {
+          not: {
+            equals: id,
+          }
+        }
+      }
+    });
+
+    return res.status(200).json({
+      message: "Bid accepted successfully",
+      data: updatedBid
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      message: "Bad Request",
+    });
+  }
+}
