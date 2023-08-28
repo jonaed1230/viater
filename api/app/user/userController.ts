@@ -372,12 +372,11 @@ export async function resetPassword(req: Request, res: Response) {
 export async function updateUser(req: Request, res: Response) {
   const user = await checkUser(req, res);
 
-  const { full_name, mobile_number, password, license_number, email } = await req.body;
+  const { full_name, password, license_number, email } = await req.body;
 
   try {
     const newData = {
       full_name: full_name || user.full_name,
-      mobile_number: mobile_number || user.mobile_number,
       password: password ? await bcrypt.hash(password, 10) : user.password,
       license_number: license_number || user.license_number,
       email: email || user.email,
