@@ -210,15 +210,34 @@ export async function getOrder(req: Request, res: Response) {
 export async function getOrders(req: Request, res: Response) {
   const user = await checkUser(req, res);
 
+  if (user.role === "USER") {
+    try {
+      const orders = await prisma.request.findMany({
+        where: {
+          user: {
+            some: {
+              id: user.id
+            }
+          }
+        }
+      });
+
+      return res.status(200).json({
+        message: "Ride requests found",
+        data: orders
+      });
+
+    } catch (error) {
+      return res.status(400).json({
+        message: "Error finding ride requests",
+        error
+      });
+    }
+  }
   try {
     const orders = await prisma.request.findMany({
       where: {
         status: "PENDING",
-        user: {
-          some: {
-            id: user.id
-          }
-        }
       }
     });
 
