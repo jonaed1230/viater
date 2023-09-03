@@ -115,6 +115,9 @@ export async function getBids(req: Request, res: Response) {
     const bids = await prisma.bid.findMany({
       where: {
         request_id: id,
+      },
+      include: {
+        driver: true,
       }
     });
 
