@@ -62,8 +62,7 @@ model Request {
   created_at              DateTime      @default(now())
   departure_time          DateTime
   status                  RequestStatus @default(PENDING)
-  user                    User          @relation(fields: [user_id], references: [id])
-  user_id                 String        @unique
+  user                    User[]
   trip                    Trip?
   bids                    Bid[]
 }

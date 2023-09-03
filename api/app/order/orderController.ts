@@ -84,6 +84,9 @@ export async function updateOrder(req: Request, res: Response) {
     const order = await prisma.request.findFirst({
       where: {
         id,
+      },
+      include: {
+        user: true,
       }
     });
 
@@ -93,7 +96,9 @@ export async function updateOrder(req: Request, res: Response) {
       });
     }
 
-    if (order.user_id !== user.id) {
+    const orderUserId = order.user[0].id;
+
+    if (orderUserId !== user.id) {
       return res.status(400).json({
         message: "Unauthorized"
       });
@@ -135,7 +140,10 @@ export async function deleteOrder(req: Request, res: Response) {
     const order = await prisma.request.findFirst({
       where: {
         id,
-      }
+      },
+      include: {
+        user: true,
+      },
     });
 
     if (!order) {
@@ -143,8 +151,8 @@ export async function deleteOrder(req: Request, res: Response) {
         message: "Ride request not found"
       });
     }
-
-    if (order.user_id !== user.id) {
+    const orderUserId = order.user[0].id;
+    if (orderUserId !== user.id) {
       return res.status(400).json({
         message: "Unauthorized"
       });
@@ -205,8 +213,12 @@ export async function getOrders(req: Request, res: Response) {
   try {
     const orders = await prisma.request.findMany({
       where: {
-        user_id: user.id,
         status: "PENDING",
+        user: {
+          some: {
+            id: user.id
+          }
+        }
       }
     });
 
