@@ -185,6 +185,15 @@ export async function getOrder(req: Request, res: Response) {
     const order = await prisma.request.findFirst({
       where: {
         id,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            full_name: true,
+            mobile_number: true,
+          }
+        }
       }
     });
 
@@ -238,6 +247,15 @@ export async function getOrders(req: Request, res: Response) {
     const orders = await prisma.request.findMany({
       where: {
         status: "PENDING",
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            full_name: true,
+            mobile_number: true,
+          }
+        },
       }
     });
 
