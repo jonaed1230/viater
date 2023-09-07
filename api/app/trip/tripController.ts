@@ -79,6 +79,7 @@ export const createTrip = async (req: Request, res: Response) => {
     }
 
     const request = bid.request;
+    const userId = request.user[0].id;
 
     const trip = await prisma.trip.create({
       data: {
@@ -103,7 +104,7 @@ export const createTrip = async (req: Request, res: Response) => {
         },
         user: {
           connect: {
-            id: request.user.id
+            id: userId
           }
         },      
       }
